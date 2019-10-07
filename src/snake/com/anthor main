@@ -1,0 +1,172 @@
+package snake.com;
+
+import javafx.animation.TranslateTransition;
+import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.scene.Scene;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
+import javafx.scene.shape.Rectangle;
+import javafx.scene.transform.Rotate;
+import javafx.scene.transform.Translate;
+import javafx.stage.Stage;
+import javafx.util.Duration;
+
+
+public class Main extends Application {
+
+    public static int pstageheight = 800;
+    public static int pstagewidth = 900;
+    public Pane layout;
+    public  final int KEYBOARD_MOVEMENT_DELTA = 10;
+    public  final Duration TRANSLATE_DURATION = Duration.seconds(7.5);
+
+
+    public static void main(String[] args) {
+	// write your code here
+        launch(args);
+
+    }
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        primaryStage.setHeight(pstageheight);
+        primaryStage.setWidth(pstagewidth);
+
+        //Height
+        primaryStage.setMaxHeight(pstageheight);
+        primaryStage.setMinHeight(pstageheight);
+
+        //Width
+        primaryStage.setMaxWidth(pstagewidth);
+        primaryStage.setMinWidth(pstagewidth);
+
+        layout = new Pane();
+
+        Food food = Food.createFood();
+
+        Shapes rectangles = new Rectangles(100,600);
+
+        Rectangle rec = (Rectangle) rectangles.draw();
+
+        layout.getChildren().addAll(rec);
+
+        layout.setStyle("-fx-background-color: black");
+
+        Scene scene = new Scene(layout);
+
+        TranslateTransition translate = new TranslateTransition();
+        translate.setDuration(TRANSLATE_DURATION);
+        translate.setNode(rec);
+        translate.setAutoReverse(true);
+
+        play(rec,scene,translate);
+
+        primaryStage.setTitle("Snake game");
+
+        primaryStage.setScene(scene);
+
+        primaryStage.show();
+    }
+
+
+
+    public void play(Rectangle rectangle,Scene scene,TranslateTransition translate){
+
+
+
+
+        scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent event) {
+                switch (event.getCode()){
+
+                    case  UP:
+
+                        moveUp(rectangle,translate);
+                        break;
+
+
+                    case DOWN:
+
+                        moveDown(rectangle,translate);
+                        break;
+
+
+                    case RIGHT:
+                        moveR(rectangle,translate);
+                        break;
+
+
+                    case LEFT:
+                        moveL(rectangle,translate);
+                        break;
+                }
+            }
+        });
+    }
+
+
+
+    public void moveUp(Rectangle rec,TranslateTransition translate){
+        // instantiating the Rotate class.
+        /*double y = rec.getY();
+            while (y>0) {
+                rec.setY(y - KEYBOARD_MOVEMENT_DELTA);
+                y--;
+            }
+        */
+        if (translate.getByY() != pstageheight) {
+            translate.stop();
+            translate.setByX(0);
+            translate.setByY(-pstageheight);
+            translate.play();
+            rec.setRotate(90);
+        }
+    }
+
+    public void moveDown(Rectangle rec,TranslateTransition translateTransition){
+        //double y = rec.getY();
+        //rec.setY(rec.getY() + KEYBOARD_MOVEMENT_DELTA)
+
+        if(translateTransition.getByY() != -pstageheight) {
+            translateTransition.stop();
+            translateTransition.setByX(0);
+            translateTransition.setByY(pstageheight);
+            translateTransition.play();
+            rec.setRotate(270);
+        }
+
+    }
+
+    public void moveR(Rectangle rec,TranslateTransition translateTransition){
+       // double x = rec.getX();
+        //if(x < 845)
+        //rec.setX(rec.getX() + KEYBOARD_MOVEMENT_DELTA);
+
+        if(translateTransition.getByX() != -pstagewidth) {
+            translateTransition.stop();
+            translateTransition.setByY(0);
+            translateTransition.setByX(pstagewidth);
+            translateTransition.play();
+            rec.setRotate(0);
+        }
+    }
+
+    public void moveL(Rectangle rec,TranslateTransition translateTransition){
+        //double x = rec.getX();
+        //if(x > 5)
+        //rec.setX(rec.getX() - KEYBOARD_MOVEMENT_DELTA);
+
+        if(translateTransition.getByX() != pstagewidth) {
+            translateTransition.stop();
+            translateTransition.setByY(0);
+            translateTransition.setByX(-pstagewidth);
+            translateTransition.play();
+            rec.setRotate(180);
+        }
+    }
+
+
+}
